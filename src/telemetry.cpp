@@ -32,7 +32,7 @@
 
 uint8_t Telem_mode     = 0;
 uint8_t Telem_cnt      = 0;
-const uint8_t MAXINDEX = 120;
+const uint8_t MAXINDEX = 28*4+2;
 const uint8_t MININDEX = 30;
 
 void telemetry_sequence(void);

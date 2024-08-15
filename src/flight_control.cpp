@@ -116,16 +116,16 @@ const float Duty_bias_up   = 1.581f;  // Altitude Control parameter　Itolab 1.5
 const float Duty_bias_down = 1.578f;  // Auto landing  parameter Itolab 1.578 M5Stack 1.578
 
 // Times
-volatile float Elapsed_time     = 0.0f;
-volatile float Old_Elapsed_time = 0.0f;
-volatile float Interval_time    = 0.0f;
-volatile uint32_t S_time = 0, E_time = 0, D_time = 0, Dt_time = 0;
+volatile float Elapsed_time     = 0.0f;//初期化が終了してからの経過時間
+volatile float Old_Elapsed_time = 0.0f;//インターバルを計算するための前の時間保持
+volatile float Interval_time    = 0.0f;//インターバル（制御周期）
+volatile uint32_t S_time = 0, E_time = 0, D_time = 0;//, Dt_time = 0;
 
 // Counter
-uint8_t AngleControlCounter   = 0;
-uint16_t RateControlCounter   = 0;
-uint16_t OffsetCounter        = 0;
-uint16_t Auto_takeoff_counter = 0;
+//uint8_t AngleControlCounter   = 0;
+//uint16_t RateControlCounter   = 0;
+uint16_t OffsetCounter        = 0;//ジャイロオフセットをデータの平均から求めるためのカウンタ
+uint16_t Auto_takeoff_counter = 0;//自動離陸のシーケンスを流すためのカウンタ
 
 // Motor Duty
 volatile float FrontRight_motor_duty = 0.0f;
@@ -158,25 +158,25 @@ volatile float Roll_angle_offset = 0.0f, Pitch_angle_offset = 0.0f, Yaw_angle_of
 volatile float Elevator_center = 0.0f, Aileron_center = 0.0f, Rudder_center = 0.0f;
 
 // Machine state & flag
-float Timevalue          = 0.0f;
+//float Timevalue          = 0.0f;
 volatile uint8_t Mode    = INIT_MODE;
 volatile uint8_t OldMode = INIT_MODE;
 uint8_t Control_mode     = ANGLECONTROL;
 // volatile uint8_t LockMode=0;
 float Motor_on_duty_threshold         = 0.1f;
 float Angle_control_on_duty_threshold = 0.5f;
-int8_t BtnA_counter                   = 0;
-uint8_t BtnA_on_flag                  = 0;
-uint8_t BtnA_off_flag                 = 1;
+//int8_t BtnA_counter                   = 0;
+//uint8_t BtnA_on_flag                  = 0;
+//uint8_t BtnA_off_flag                 = 1;
 volatile uint8_t Loop_flag            = 0;
 // volatile uint8_t Angle_control_flag = 0;
-uint8_t Stick_return_flag     = 0;
+//uint8_t Stick_return_flag     = 0;
 uint8_t Throttle_control_mode = 0;
 uint8_t Landing_state         = 0;
-uint8_t OladRange0flag        = 0;
+uint8_t OladRange0flag        = 0;//下降してない場合にスラストを減少するための変数
 
 // for flip
-float FliRoll_rate_time          = 2.0;
+//float FliRoll_rate_time          = 2.0;
 uint8_t Flip_flag                = 0;
 uint16_t Flip_counter            = 0;
 float Flip_time                  = 2.0;
@@ -210,7 +210,7 @@ const float Alt_ref0   = 0.5f;
 volatile float Alt_ref = Alt_ref0;
 
 uint8_t ahrs_reset_flag      = 0;
-uint8_t last_ahrs_reset_flag = 0;
+uint8_t last_ahrs_reset_flag = 0;//フラグの変化を見るため
 
 // Function declaration
 void init_pwm();
@@ -219,8 +219,8 @@ void variable_init(void);
 void get_command(void);
 void angle_control(void);
 void rate_control(void);
-void output_data(void);
-void output_sensor_raw_data(void);
+//void output_data(void);
+//void output_sensor_raw_data(void);
 void motor_stop(void);
 uint8_t judge_mode_change(void);
 uint8_t get_arming_button(void);
@@ -230,7 +230,7 @@ void reset_angle_control(void);
 uint8_t auto_landing(void);
 float get_trim_duty(float voltage);
 void flip(void);
-float get_rate_ref(float x);
+float get_rate_ref(float x);//スポーツモードのスティックとレート指令値との対応
 
 // 割り込み関数
 // Intrupt function
@@ -288,7 +288,7 @@ void init_copter(void) {
 
 // Main loop
 void loop_400Hz(void) {
-    static uint8_t led = 1;
+    //static uint8_t led = 1;
     float sense_time;
     // 割り込みにより400Hzで以降のコードが実行
     while (Loop_flag == 0);
@@ -298,7 +298,7 @@ void loop_400Hz(void) {
     Old_Elapsed_time = Elapsed_time;
     Elapsed_time     = 1e-6 * (E_time - S_time);
     Interval_time    = Elapsed_time - Old_Elapsed_time;
-    Timevalue += 0.0025f;
+    //Timevalue += 0.0025f;
 
     // Read Sensor Value
     sense_time       = sensor_read();
@@ -380,7 +380,7 @@ void loop_400Hz(void) {
         Flip_flag            = 0;
         Range0flag           = 0;
         Alt_ref              = Alt_ref0;
-        Stick_return_flag    = 0;
+        //Stick_return_flag    = 0;
         Landing_state        = 0;
         Auto_takeoff_counter = 0;
         Thrust_filtered.reset();
@@ -406,7 +406,7 @@ void loop_400Hz(void) {
     telemetry();
 
     uint32_t ce_time = micros();
-    Dt_time          = ce_time - cs_time;
+    //Dt_time          = ce_time - cs_time;
     OldMode          = Mode;  // Memory now mode
     // End of Loop_400Hz function
 }
