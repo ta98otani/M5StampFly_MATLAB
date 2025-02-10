@@ -31,6 +31,7 @@
 #include <math.h>
 #include <FastLED.h>
 #include <vl53lx_platform.h>
+#include "BLEHandler.h"
 
 #define BATTERY_VOLTAGE (3.7)
 #define PIN_BUTTON      0
@@ -154,4 +155,6 @@ extern uint8_t Throttle_control_mode;
 
 extern uint8_t ahrs_reset_flag;
 extern uint8_t last_ahrs_reset_flag;
+
+extern BLEHandler bleHandler;
 #endif

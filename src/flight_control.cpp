@@ -45,6 +45,7 @@
 #include "telemetry.hpp"
 #include "button.hpp"
 #include "buzzer.h"
+#include "BLEHandler.h"
 
 // モータPWM出力Pinのアサイン
 // Motor PWM Pin
@@ -403,7 +404,13 @@ void loop_400Hz(void) {
 
     //// Telemetry
     // telemetry_fast();
-    telemetry();
+    //telemetry();
+       
+    if (bleHandler.isDeviceConnected()) {
+
+        bleHandler.sendSensorData();
+
+    }
 
     uint32_t ce_time = micros();
     //Dt_time          = ce_time - cs_time;

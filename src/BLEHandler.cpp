@@ -1,5 +1,6 @@
 #include "BLEHandler.h"
-#include "stampfly.hpp"
+#include "sensor.hpp"
+#include "flight_control.hpp"
 
 BLEHandler::BLEHandler() : pServer(nullptr), pCharacteristic(nullptr), deviceConnected(false) {}
 
@@ -54,28 +55,48 @@ void BLEHandler::sendSensorData() {
         // Send the sensor data over BLE
         uint8_t sensorData[44]; // 11 floats * 4 bytes = 48 bytes
         float data;
-        data = StampFly.times.elapsed_time;
+        data = Elapsed_time;
         memcpy(sensorData, &data, sizeof(float));
-        data = StampFly.times.interval_time;
+        data = Interval_time;
         memcpy(sensorData + 4, &data, sizeof(float));
-        data = StampFly.sensor.roll_angle * 180 / PI;
+        data =  (Roll_angle - Roll_angle_offset) * 180 / PI;
         memcpy(sensorData + 8, &data, sizeof(float));
-        data = StampFly.sensor.pitch_angle * 180 / PI;
+        data = (Pitch_angle - Pitch_angle_offset) * 180 / PI;
         memcpy(sensorData + 12, &data, sizeof(float));
-        data = StampFly.sensor.yaw_angle * 180 / PI;
+        data = (Yaw_angle - Yaw_angle_offset) * 180 / PI;
         memcpy(sensorData + 16, &data, sizeof(float));
-        data = StampFly.sensor.roll_rate * 180 / PI;
+        data = Roll_rate * 180 / PI;
         memcpy(sensorData + 20, &data, sizeof(float));
-        data = StampFly.sensor.pitch_rate * 180 / PI;
+        data = Pitch_rate * 180 / PI;
         memcpy(sensorData + 24, &data, sizeof(float));
-        data = StampFly.sensor.yaw_rate;
+        data = Yaw_rate * 180 / PI;
         memcpy(sensorData + 28, &data, sizeof(float));
-        data = StampFly.sensor.accx;
+        data = Accel_x_raw;
         memcpy(sensorData + 32, &data, sizeof(float));
-        data = StampFly.sensor.accy;
+        data = Accel_y_raw;
         memcpy(sensorData + 36, &data, sizeof(float));
-        data = StampFly.sensor.accz;
+        data = Accel_z_raw;
         memcpy(sensorData + 40, &data, sizeof(float));
+        data = Alt_velocity;
+        memcpy(sensorData + 44, &data, sizeof(float));
+        data = Z_dot_ref;
+        memcpy(sensorData + 48, &data, sizeof(float));
+        data = Alt_ref;
+        memcpy(sensorData + 52, &data, sizeof(float));
+        data = Altitude2;
+        memcpy(sensorData + 56, &data, sizeof(float));        
+        data = Altitude;
+        memcpy(sensorData + 60, &data, sizeof(float));        
+        data = Az;
+        memcpy(sensorData + 64, &data, sizeof(float));
+        data = Az_bias;
+        memcpy(sensorData + 68, &data, sizeof(float));
+        data = Alt_flag;
+        memcpy(sensorData + 72, &data, sizeof(float));
+        data = Mode;
+        memcpy(sensorData + 76, &data, sizeof(float));
+        data = RangeFront;
+        memcpy(sensorData + 80, &data, sizeof(float));
 
         pCharacteristic->setValue(sensorData, sizeof(sensorData));
         //pCharacteristic->notify();
