@@ -53,7 +53,7 @@ void BLEHandler::initBLE() {
 void BLEHandler::sendSensorData() {
     if (deviceConnected) {
         // Send the sensor data over BLE
-        uint8_t sensorData[44]; // 11 floats * 4 bytes = 48 bytes
+        uint8_t sensorData[84]; // 21 floats * 4 bytes = 84 bytes
         float data;
         data = Elapsed_time;
         memcpy(sensorData, &data, sizeof(float));
