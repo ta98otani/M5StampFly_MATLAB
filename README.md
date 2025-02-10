@@ -9,9 +9,8 @@ Platformio
 https://github.com/M5Fly-kanazawa/M5StampFly
 
 ## MATLAB Version Required (Tested Version)
-- R2024b 
-- Required Toolbox
-Navigation Toolbox (https://jp.mathworks.com/products/navigation.html)  for visualizing sensor data in 3D 
+- MATLAB R2024b 
+- Navigation Toolbox (https://jp.mathworks.com/products/navigation.html)  for visualizing sensor data in 3D 
 
 ## Third-party libraries
 fastled/FastLED
