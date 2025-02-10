@@ -8,9 +8,9 @@ Platformio
 ## Base on project
 https://github.com/M5Fly-kanazawa/M5StampFly
 
-## MATLAB Version Required (Tested)
+## MATLAB Version Required (Tested Version)
 R2024b 
-# Required Toolbox
+- Required Toolbox
 Navigation Toolbox (https://jp.mathworks.com/products/navigation.html)  for visualizing sensor data in 3D 
 
 ## Third-party libraries
