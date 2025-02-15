@@ -50,7 +50,7 @@ while true
         
         rawData = read(data_c);
 
-        if length(rawData) == 84
+        if length(rawData) == 88
             % Convert raw bytes to float values
             %elapsed_time  = typecast(uint8(rawData(1:4)), 'single');
             %interval_time = typecast(uint8(rawData(5:8)), 'single');
