@@ -1,10 +1,8 @@
 %List M5 Stack in BLE
-list = blelist("Name","StampFly_BLE")
-
-%%
+list = blelist("Name","StampFly_BLE");
 
 %Connect to the device
-m5 = ble("34B7DA5D29B9")
+m5 = ble(list.Address);
 m5.Characteristics
 
 ServiceUUID = "1A8E4E30-DEF4-4D96-A1F4-7E6101B7EEA4";
@@ -14,13 +12,29 @@ characteristicUID = "8F9A9BC0-2BDD-40DD-8BB5-CB9D4E3799FF";  % For interacting d
 data_c = characteristic(m5, ServiceUUID, characteristicUID);
 
 %% Example to send data to StampFly
-%valueToSend = single(1); 
+d_RUDDER = 0;
+d_THROTTLE = 0;
+d_AILERON = 0;
+d_ELEVATOR =0;
+d_BUTTON_ARM = 0;
+d_BUTTON_FLIP = 0;
+d_CONTROLMODE = 0;
+d_ALTCONTROLMODE = 0;
 
 % Convert to byte array
-%byteData = typecast(valueToSend, 'uint8');
+valuesToSend = typecast(single([d_RUDDER, ...
+                               d_THROTTLE, ...
+                               d_AILERON, ...
+                               d_ELEVATOR, ...
+                               d_BUTTON_ARM, ...
+                               d_BUTTON_FLIP, ...
+                               d_CONTROLMODE, ...
+                               d_ALTCONTROLMODE]), 'uint8');
 
-% Send data to M5Stack
-%write(data_c, byteData);
+
+
+% Send data to Stampfly
+write(data_c, valuesToSend);
 
 %% 
 

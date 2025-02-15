@@ -1,6 +1,8 @@
-#include "BLEHandler.h"
+#include "BLEHandler.hpp"
 #include "sensor.hpp"
 #include "flight_control.hpp"
+
+volatile float Stick[16];
 
 BLEHandler::BLEHandler() : pServer(nullptr), pCharacteristic(nullptr), deviceConnected(false) {}
 
@@ -20,10 +22,19 @@ void BLEHandler::MyServerCallbacks::onDisconnect(BLEServer* pServer) {
 void BLEHandler::MyCallbacks::onWrite(BLECharacteristic* pCharacteristic) {
     std::string receivedData = pCharacteristic->getValue();
     if (receivedData.length() > 0) {
-        USBSerial.printf("BLE Data Received!\r\n");
-        float receivedValue;
-        memcpy(&receivedValue, receivedData.data(), sizeof(float));
-        // Process received data here if needed
+        //USBSerial.printf("BLE Data Received!\r\n");
+        float receivedValues[8];
+        memcpy(&receivedValues, receivedData.data(), 32); //4 bytes * 8 floats
+
+        Stick[RUDDER]         = receivedValues[0];
+        Stick[THROTTLE]       = receivedValues[1];
+        Stick[AILERON]        = receivedValues[2];
+        Stick[ELEVATOR]       = receivedValues[3];
+        Stick[BUTTON_ARM]     = receivedValues[4];   // auto_up_down_status
+        Stick[BUTTON_FLIP]    = receivedValues[5];
+        Stick[CONTROLMODE]    = receivedValues[6];   // Mode:rate or angle control
+        Stick[ALTCONTROLMODE] = receivedValues[7];   // 高度制御
+
     }
 }
 

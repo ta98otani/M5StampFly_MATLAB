@@ -38,14 +38,14 @@
 // 2024-08-10 Acroモードで高度制御働かないバグを修正
 
 #include "flight_control.hpp"
-#include "rc.hpp"
+//#include "rc.hpp"
 #include "pid.hpp"
 #include "sensor.hpp"
 #include "led.hpp"
-#include "telemetry.hpp"
+//#include "telemetry.hpp"
 #include "button.hpp"
 #include "buzzer.h"
-#include "BLEHandler.h"
+#include "BLEHandler.hpp"
 
 // モータPWM出力Pinのアサイン
 // Motor PWM Pin
@@ -213,6 +213,8 @@ volatile float Alt_ref = Alt_ref0;
 uint8_t ahrs_reset_flag      = 0;
 uint8_t last_ahrs_reset_flag = 0;//フラグの変化を見るため
 
+BLEHandler bleHandler;
+
 // Function declaration
 void init_pwm();
 void control_init();
@@ -268,7 +270,10 @@ void init_copter(void) {
     control_init();
 
     // Initilize Radio control
-    rc_init();
+    //rc_init();
+
+    // Initialize BLE for sending sensor data to PC
+    bleHandler.initBLE();
 
     // 割り込み設定
     // Initialize intrupt
@@ -305,6 +310,12 @@ void loop_400Hz(void) {
     sense_time       = sensor_read();
     uint32_t cs_time = micros();
 
+    if (bleHandler.isDeviceConnected()) {
+        bleHandler.sendSensorData();
+    }
+
+    //USBSerial.printf("Mode = %d\r\n", Mode);
+
     // LED Drive
     led_drive();
     // if (Interval_time>0.006)USBSerial.printf("%9.6f\n\r", Interval_time);
@@ -338,7 +349,7 @@ void loop_400Hz(void) {
 
         // Judge Mode change
         if (judge_mode_change() == 1) Mode = AUTO_LANDING_MODE;
-        if (rc_isconnected() == 0) Mode = AUTO_LANDING_MODE;
+        // if (rc_isconnected() == 0) Mode = AUTO_LANDING_MODE;
         // if (Range0flag == 20) Mode = AUTO_LANDING_MODE;
         if (OverG_flag == 1) Mode = PARKING_MODE;
         if (Mode != OldMode) ahrs_reset();
@@ -351,6 +362,8 @@ void loop_400Hz(void) {
 
         // Rate Control
         rate_control();
+
+        //USBSerial.printf("Stick[THROTTLE] = %f\r\n", Stick[THROTTLE]);
     } else if (Mode == FLIP_MODE) {
         flip();
     } else if (Mode == PARKING_MODE) {
@@ -405,12 +418,6 @@ void loop_400Hz(void) {
     //// Telemetry
     // telemetry_fast();
     //telemetry();
-       
-    if (bleHandler.isDeviceConnected()) {
-
-        bleHandler.sendSensorData();
-
-    }
 
     uint32_t ce_time = micros();
     //Dt_time          = ce_time - cs_time;
@@ -428,7 +435,7 @@ void flip(void) {
 
     // Judge Mode change
     if (judge_mode_change() == 1) Mode = AUTO_LANDING_MODE;
-    if (rc_isconnected() == 0) Mode = AUTO_LANDING_MODE;
+    //if (rc_isconnected() == 0) Mode = AUTO_LANDING_MODE;
     if (OverG_flag == 1) Mode = PARKING_MODE;
 
     // Flip parameter set
@@ -539,19 +546,21 @@ uint8_t judge_mode_change(void) {
     uint8_t state;
     static uint8_t chatter = 0;
     state                  = 0;
+
     if (chatter == 0) {
         if (get_arming_button() == 1) {
             chatter = 1;
         }
     } else {
         if (get_arming_button() == 0) {
-            chatter++;
-            if (chatter > 40) {
+            //chatter++;
+            //if (chatter > 40) {
                 chatter = 0;
                 state   = 1;
-            }
+            //}
         }
     }
+
     return state;
 }
 
@@ -1055,17 +1064,17 @@ uint8_t get_arming_button(void) {
     static int8_t chatta = 0;
     static uint8_t state = 0;
     if ((int)Stick[BUTTON_ARM] == 1) {
-        chatta++;
-        if (chatta > 10) {
-            chatta = 10;
+        //chatta++;
+        //if (chatta > 10) {
+        //    chatta = 10;
             state  = 1;
-        }
+        //}
     } else {
-        chatta--;
-        if (chatta < -10) {
-            chatta = -10;
+        //chatta--;
+        //if (chatta < -10) {
+        //    chatta = -10;
             state  = 0;
-        }
+        //}
     }
     return state;
 }

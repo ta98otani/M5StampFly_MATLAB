@@ -25,7 +25,7 @@
 
 #include "led.hpp"
 #include "sensor.hpp"
-#include "rc.hpp"
+#include "BLEHandler.hpp"
 #include "flight_control.hpp"
 
 uint32_t Led_color       = 0x000000;
@@ -68,7 +68,7 @@ void led_drive(void) {
 
         if (Throttle_control_mode == 1) Led_color = 0xc71585;  // 高度制御初期
         if (Alt_flag >= 1) Led_color = 0x331155;               // 高度制御モードではピンク
-        if (Rc_err_flag == 1) Led_color = 0xff0000;
+        //if (Rc_err_flag == 1) Led_color = 0xff0000;
 
         if (Under_voltage_flag < UNDER_VOLTAGE_COUNT) {
             onboard_led1(Led_color, 1);

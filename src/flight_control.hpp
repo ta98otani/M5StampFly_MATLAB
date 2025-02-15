@@ -31,7 +31,7 @@
 #include <math.h>
 #include <FastLED.h>
 #include <vl53lx_platform.h>
-#include "BLEHandler.h"
+#include "BLEHandler.hpp"
 
 #define BATTERY_VOLTAGE (3.7)
 #define PIN_BUTTON      0
