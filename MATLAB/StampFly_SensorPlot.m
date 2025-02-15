@@ -46,7 +46,7 @@ ax = poseplot(ones("quaternion"),[0 0 0],MeshFileName="multirotor.stl",ScaleFact
 % Main loop (polling for data)
 while true
     try
-        % Read raw BLE data (84 bytes expected)
+        % Read raw BLE data (88 bytes expected)
         
         rawData = read(data_c);
 
@@ -75,6 +75,7 @@ while true
             %Alt_flag      = typecast(uint8(rawData(73:76)), 'single');
             %Mode          = typecast(uint8(rawData(77:80)), 'single');
             %RangeFront    = typecast(uint8(rawData(81:84)), 'single');
+            %Voltage        = typecast(uint8(rawData(85:88)), 'single');
  
              q = quaternion([roll_angle pitch_angle yaw_angle],"eulerd", "XYZ","point");
             ax.Orientation = q;

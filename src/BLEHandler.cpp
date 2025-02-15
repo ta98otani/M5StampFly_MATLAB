@@ -64,7 +64,7 @@ void BLEHandler::initBLE() {
 void BLEHandler::sendSensorData() {
     if (deviceConnected) {
         // Send the sensor data over BLE
-        uint8_t sensorData[84]; // 21 floats * 4 bytes = 84 bytes
+        uint8_t sensorData[88]; // 22 floats * 4 bytes = 84 bytes
         float data;
         data = Elapsed_time;
         memcpy(sensorData, &data, sizeof(float));
@@ -108,6 +108,8 @@ void BLEHandler::sendSensorData() {
         memcpy(sensorData + 76, &data, sizeof(float));
         data = RangeFront;
         memcpy(sensorData + 80, &data, sizeof(float));
+        data = Voltage;
+        memcpy(sensorData + 84, &data, sizeof(float));        
 
         pCharacteristic->setValue(sensorData, sizeof(sensorData));
         //pCharacteristic->notify();
